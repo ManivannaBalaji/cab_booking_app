@@ -7,18 +7,17 @@ public class CalculateFare {
 	 * @param distance
 	 * @return the traveling charges based on car type, distance, peak hours and senior citizen concessions.
 	 */
-	public static int calculatePrice(int option, float distance, boolean peakHours, boolean seniorCitizen) {
-		int microPrice = 10, miniPrice = 15, primePrice = 20;
+	public static int calculatePrice(int option, int[] prices, float distance, boolean peakHours, boolean seniorCitizen) {
 		double price = 0;
 		switch(option) {
 			case 1:
-				price = microPrice * (int) distance;
+				price = prices[0] * (int) distance;
 				break;
 			case 2:
-				price = miniPrice * (int) distance;
+				price = prices[1] * (int) distance;
 				break;
 			case 3:
-				price = primePrice * (int) distance;
+				price = prices[2] * (int) distance;
 				break;
 		}
 		if(peakHours) {
@@ -33,12 +32,13 @@ public class CalculateFare {
 	
 	
 	/**
-	 * 
+	 * This method validates the GST tax for cab fare.
+	 * @param percentage
 	 * @param price
-	 * @return the GST tax amount for the journey fare.
+	 * @return GST tax for the journey.
 	 */
-	public static int calculateGst(int price) {
-		double gstPrice = 0.07 * price;
+	public static int calculateGst(int percentage, int price) {
+		double gstPrice = (percentage/(double)100) * price;
 		gstPrice = Math.ceil(gstPrice);
 		return (int)gstPrice;
 	}

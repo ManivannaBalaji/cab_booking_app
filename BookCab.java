@@ -2,7 +2,6 @@ package com.manivannabalaji.cabbookingapp;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.Period;
 import java.util.Scanner;
 
 public class BookCab {
@@ -11,13 +10,14 @@ public class BookCab {
 		
 		Scanner scanner = new Scanner(System.in);
 		long mobileNumber;
-		String password = "pass1234", currentPassword, dobString;
+		String currentPassword, dobString;
 		String source, destination;
 		LocalDate dateOfBirth;
-		int option = 0, price = 0, gstPrice = 0;
+		int[] prices = {10, 15, 20};
+		int option = 0, price = 0, gstPrice = 0, gstPercent = 7;
 		int journeyHour = 0;
 		float distance = 0f;
-		boolean peakHours = false, seniorCitizen = false;
+		boolean peakHours = false, seniorCitizen = false, paymentSuccess = false;
 		String journeyDate, journeyTime;
 		LocalDate travelDate, bookingDate;
 		LocalTime travelTime = null, bookingTime;
@@ -35,7 +35,7 @@ public class BookCab {
 		System.out.println("Enter your password");
 		currentPassword = scanner.nextLine();
 		
-		if(String.valueOf(mobileNumber).length() < 10 || !password.equals(currentPassword)) {
+		if(!StringValidator.validateMobile(mobileNumber) || !StringValidator.validatePassword(currentPassword)) {
 			System.out.println("Invalid Login please try again!");
 			System.exit(0);
 		}
@@ -71,14 +71,13 @@ public class BookCab {
 				}
 			}
 			journeyHour = travelTime.getHour();
-			if(journeyHour >= 17 && journeyHour <= 19) {
+			if(TimeValidator.peakHour(journeyHour)) {
 				peakHours = true;
 			}
 			System.out.println("Enter your Date-of-Birth (YYYY-MM-DD)");
 			dobString = scanner.nextLine();
 			dateOfBirth = LocalDate.parse(dobString);
-			Period interval = Period.between(dateOfBirth, bookingDate);
-			int intervalYears = interval.getYears();
+			int intervalYears = TimeValidator.getInterval(dateOfBirth, bookingDate);
 			if(intervalYears > 60) {
 				seniorCitizen = true;
 			}else if(intervalYears < 1) {
@@ -86,10 +85,13 @@ public class BookCab {
 				System.exit(0);
 			}
 		}
-		price = CalculateFare.calculatePrice(option, distance, peakHours, seniorCitizen);
-		gstPrice = CalculateFare.calculateGst(price);
+		price = CalculateFare.calculatePrice(option, prices, distance, peakHours, seniorCitizen);
+		gstPrice = CalculateFare.calculateGst(gstPercent, price);
 		PrintStatement.printRecepit(option, bookingDate, bookingTime, travelDate, travelTime, distance, price, gstPrice, peakHours, seniorCitizen, source, destination);
-		PaymentGateway.performPayment();
+		paymentSuccess = PaymentGateway.performPayment();
+		if(paymentSuccess) {
+			System.out.println("Payment successful!\nThank You");
+		}
 		scanner.close();
 		
 	}

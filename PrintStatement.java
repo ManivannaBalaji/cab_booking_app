@@ -8,7 +8,7 @@ import java.util.Locale;
 public class PrintStatement {
 	
 	/**
-	 * 
+	 * Prints the total journey fare including taxes.
 	 * @param option
 	 * @param bookingDate
 	 * @param bookingTime
@@ -18,7 +18,6 @@ public class PrintStatement {
 	 * @param price
 	 * @param peakHours
 	 * @param seniorCitizen
-	 * @apiNote Prints the total journey fare including taxes.
 	 */
 	public static void printRecepit(int option, LocalDate bookingDate, 
 										LocalTime bookingTime, LocalDate journeyDate, 

@@ -5,8 +5,13 @@ import java.util.Scanner;
 
 public class PaymentGateway {
 
-	protected static void performPayment() {
+	/**
+	 * Method to perform payment
+	 * @return
+	 */
+	protected static boolean performPayment() {
 		Scanner scanner = new Scanner(System.in);
+		boolean paymentSuccess = false;
 		int option = 0;
 		long cardNumber = 0L;
 		String tempDate;
@@ -29,14 +34,16 @@ public class PaymentGateway {
 				expiryDate = LocalDate.parse(tempDate);
 				if(expiryDate.isBefore(currentDate)) {
 					System.out.println("Card Expired, please try with other card!");
+					paymentSuccess = false;
 					System.exit(0);
 				}
 				System.out.println("Payment details");
 				System.out.println("Card No: " + cardNumber);
-				System.out.println("Payment Success!");
+				paymentSuccess = true;
 				break;
 		}
 		scanner.close();
+		return paymentSuccess;
 	}
 	
 }
